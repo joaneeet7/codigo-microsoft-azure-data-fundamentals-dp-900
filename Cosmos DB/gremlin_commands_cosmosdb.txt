@@ -1,0 +1,104 @@
+// ==========================================
+// Azure Cosmos DB - Gremlin API Cheatsheet
+// Autor: Joan Amengual
+// ==========================================
+
+// ----------------------------------------
+// CREACIÓN DE VÉRTICES (NODOS)
+// ----------------------------------------
+
+// Añadir personas al grafo
+g.addV('persona').property('id', '1').property('nombre', 'Joan').property('edad', 35)
+g.addV('persona').property('id', '2').property('nombre', 'María').property('edad', 30)
+g.addV('persona').property('id', '3').property('nombre', 'Carlos').property('edad', 40)
+
+// ----------------------------------------
+// CREACIÓN DE ARISTAS (RELACIONES)
+// ----------------------------------------
+
+// Joan es amigo de María
+g.V('1').addE('amigo').to(g.V('2'))
+
+// María es compañera de Carlos
+g.V('2').addE('compañero').to(g.V('3'))
+
+// Carlos conoce a Joan
+g.V('3').addE('conoce').to(g.V('1'))
+
+// ----------------------------------------
+// CONSULTAS BÁSICAS
+// ----------------------------------------
+
+// Obtener todos los vértices
+g.V()
+
+// Obtener todos los vértices con etiqueta "persona"
+g.V().hasLabel('persona')
+
+// Buscar por propiedad
+g.V().has('nombre', 'María')
+
+// Obtener un vértice por ID
+g.V('1')
+
+// ----------------------------------------
+// RECORRIDOS Y RELACIONES
+// ----------------------------------------
+
+// Obtener personas que Joan conoce directamente (amigos, compañeros, etc.)
+g.V('1').out()
+
+// Obtener etiquetas de las relaciones salientes de María
+g.V('2').outE().label()
+
+// Ver a quién conoce Carlos y luego a quién conocen esas personas (2 saltos)
+g.V('3').out().out()
+
+// Mostrar relaciones entre personas con sus propiedades
+g.V().as('a').outE().as('rel').inV().as('b').
+  select('a','rel','b')
+
+// ----------------------------------------
+// ACTUALIZACIONES
+// ----------------------------------------
+
+// Cambiar la edad de Carlos
+g.V('3').property('edad', 41)
+
+// Añadir nueva propiedad "ciudad" a Joan
+g.V('1').property('ciudad', 'Palma')
+
+// ----------------------------------------
+// ELIMINACIONES
+// ----------------------------------------
+
+// Eliminar un vértice por ID
+g.V('3').drop()
+
+// Eliminar una arista específica (requiere el ID de la arista)
+g.E('edge-id').drop()
+
+// ----------------------------------------
+// OTROS COMANDOS ÚTILES
+// ----------------------------------------
+
+// Contar todos los vértices
+g.V().count()
+
+// Contar relaciones tipo "amigo"
+g.E().hasLabel('amigo').count()
+
+// Ver todos los IDs de nodos
+g.V().id()
+
+// Ver todos los IDs de aristas
+g.E().id()
+
+// Obtener todas las etiquetas de nodos
+g.V().label().dedup()
+
+// Obtener todas las propiedades de un nodo
+g.V('1').valueMap()
+
+// Obtener propiedades con claves
+g.V('1').valueMap(true)
